@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block titulo %}Nova OS - MecaSystem{% endblock %}
+{% block nav_ordens %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Nova Ordem de Serviço</div>
+    <div class="page-sub">Preencha os dados da OS</div>
+  </div>
+  <a href="/ordens/" class="btn-cancelar">← Voltar</a>
+</div>
+
+<div class="form-card" style="max-width:700px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Cliente *</label>
+      <select name="cliente" class="form-control" required>
+        <option value="">Selecione um cliente...</option>
+        {% for cliente in clientes %}
+          <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Descrição do serviço *</label>
+      <textarea name="descricao" class="form-control" rows="3" placeholder="Descreva o serviço a ser realizado..." required></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Mão de obra (R$)</label>
+      <input type="text" name="mao_de_obra" class="form-control" placeholder="Ex: 150.00" value="0.00">
+    </div>
+
+    {% if pecas %}
+    <div class="mb-3">
+      <label class="form-label">Peças utilizadas</label>
+      <div class="table-responsive">
+        <table class="table table-bordered" style="font-size:13px">
+          <thead>
+            <tr style="background:#fafafa">
+              <th>Peça</th>
+              <th>Preço unit.</th>
+              <th style="width:120px">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for peca in pecas %}
+            <tr>
+              <td>{{ peca.nome }}</td>
+              <td>R$ {{ peca.preco_venda }}</td>
+              <td><input type="number" name="peca_{{ peca.id }}" value="0" min="0" class="form-control form-control-sm"></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn-salvar">Salvar Ordem de Serviço</button>
+      <a href="/ordens/" class="btn-cancelar">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

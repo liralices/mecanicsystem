@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block titulo %}Estoque - MecaSystem{% endblock %}
+{% block nav_estoque %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Estoque</div>
+    <div class="page-sub">Controle de peças e materiais</div>
+  </div>
+  <a href="/estoque/adicionar/" class="btn-novo">+ Nova Peça</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="label">Total de peças</div>
+      <div class="value">{{ pecas|length }}</div>
+      <div class="sub">itens cadastrados</div>
+    </div>
+  </div>
+</div>
+
+<div class="card-table">
+  <div class="card-top">
+    <span style="font-size:13px;font-weight:500;color:#1a3c5e">Lista de peças</span>
+    <input type="text" placeholder="Buscar peça..." class="form-control form-control-sm" style="width:200px" id="busca" onkeyup="filtrar()">
+  </div>
+  <table class="table mb-0" id="tabela">
+    <thead>
+      <tr>
+        <th>Peça</th>
+        <th>Quantidade</th>
+        <th>Preço de custo</th>
+        <th>Preço de venda</th>
+        <th>Fornecedor</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for peca in pecas %}
+      <tr>
+        <td><strong>{{ peca.nome }}</strong></td>
+        <td>
+          {% if peca.quantidade == 0 %}
+            <span class="badge-os">Sem estoque</span>
+          {% else %}
+            {{ peca.quantidade }} un.
+          {% endif %}
+        </td>
+        <td>R$ {{ peca.preco_custo }}</td>
+        <td>R$ {{ peca.preco_venda }}</td>
+        <td>{{ peca.fornecedor|default:"—" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center py-4" style="color:#888;font-size:13px">
+          Nenhuma peça cadastrada.
+          <a href="/estoque/adicionar/" style="color:#1a6fc4">Cadastrar agora</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filtrar() {
+  const busca = document.getElementById('busca').value.toLowerCase();
+  document.querySelectorAll('#tabela tbody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(busca) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

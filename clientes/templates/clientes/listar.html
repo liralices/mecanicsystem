@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block titulo %}Clientes - MecaSystem{% endblock %}
+{% block nav_clientes %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Clientes</div>
+    <div class="page-sub">Gerencie os clientes da oficina</div>
+  </div>
+  <a href="/clientes/adicionar/" class="btn-novo">+ Novo Cliente</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="label">Total de clientes</div>
+      <div class="value">{{ clientes|length }}</div>
+      <div class="sub">cadastrados no sistema</div>
+    </div>
+  </div>
+</div>
+
+<div class="card-table">
+  <div class="card-top">
+    <span style="font-size:13px;font-weight:500;color:#1a3c5e">Lista de clientes</span>
+    <input type="text" placeholder="Buscar cliente..." class="form-control form-control-sm" style="width:200px" id="busca" onkeyup="filtrar()">
+  </div>
+  <table class="table mb-0" id="tabela">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Telefone</th>
+        <th>Email</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+      <tr>
+        <td>
+          <span class="avatar-circle">{{ cliente.nome|slice:":2"|upper }}</span>
+          {{ cliente.nome }}
+        </td>
+        <td>{{ cliente.telefone|default:"—" }}</td>
+        <td>{{ cliente.email|default:"—" }}</td>
+        <td>
+          <span class="badge-ativo">Ativo</span>
+          &nbsp;
+          <a href="/clientes/excluir/{{ cliente.id }}/" class="btn-del" style="padding:4px 10px;font-size:11px;text-decoration:none">Excluir</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center py-4" style="color:#888;font-size:13px">
+          Nenhum cliente cadastrado.
+          <a href="/clientes/adicionar/" style="color:#1a6fc4">Cadastrar agora</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filtrar() {
+  const busca = document.getElementById('busca').value.toLowerCase();
+  document.querySelectorAll('#tabela tbody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(busca) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

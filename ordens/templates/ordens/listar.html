@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block titulo %}Ordens de Serviço - MecaSystem{% endblock %}
+{% block nav_ordens %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Ordens de Serviço</div>
+    <div class="page-sub">Gerencie as ordens de serviço da oficina</div>
+  </div>
+  <a href="/ordens/adicionar/" class="btn-novo">+ Nova OS</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="label">Total de ordens</div>
+      <div class="value">{{ ordens|length }}</div>
+      <div class="sub">registradas no sistema</div>
+    </div>
+  </div>
+</div>
+
+<div class="card-table">
+  <div class="card-top">
+    <span style="font-size:13px;font-weight:500;color:#1a3c5e">Lista de ordens</span>
+    <input type="text" placeholder="Buscar OS..." class="form-control form-control-sm" style="width:200px" id="busca" onkeyup="filtrar()">
+  </div>
+  <table class="table mb-0" id="tabela">
+    <thead>
+      <tr>
+        <th>Nº OS</th>
+        <th>Cliente</th>
+        <th>Descrição</th>
+        <th>Data</th>
+        <th>Mão de obra</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ordem in ordens %}
+      <tr>
+        <td><strong>#{{ ordem.id }}</strong></td>
+        <td>
+          <span class="avatar-circle">{{ ordem.cliente.nome|slice:":2"|upper }}</span>
+          {{ ordem.cliente.nome }}
+        </td>
+        <td>{{ ordem.descricao|truncatechars:40 }}</td>
+        <td>{{ ordem.data }}</td>
+        <td>R$ {{ ordem.mao_de_obra }}</td>
+        <td><strong>R$ {{ ordem.valor_total }}</strong></td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center py-4" style="color:#888;font-size:13px">
+          Nenhuma ordem cadastrada.
+          <a href="/ordens/adicionar/" style="color:#1a6fc4">Criar agora</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filtrar() {
+  const busca = document.getElementById('busca').value.toLowerCase();
+  document.querySelectorAll('#tabela tbody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(busca) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

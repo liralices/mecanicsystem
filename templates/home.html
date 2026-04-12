@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}Início - MecaSystem{% endblock %}
+
+{% block conteudo %}
+<div class="text-center py-5">
+  <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px">
+  <svg width="52" height="52" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="8" fill="#1a3c5e"/>
+    <path d="M20.5 7.5C18.8 7.5 17.3 8.4 16.5 9.8L9.5 16.8C8.1 17.6 7.5 19.3 7.5 20.5C7.5 23.3 9.7 25.5 12.5 25.5C13.7 25.5 15.4 24.9 16.2 23.5L23.2 16.5C24.6 15.7 25.5 14.2 25.5 12.5C25.5 9.7 23.3 7.5 20.5 7.5ZM12.5 23.5C10.8 23.5 9.5 22.2 9.5 20.5C9.5 18.8 10.8 17.5 12.5 17.5C14.2 17.5 15.5 18.8 15.5 20.5C15.5 22.2 14.2 23.5 12.5 23.5ZM20.5 14.5C18.8 14.5 17.5 13.2 17.5 11.5C17.5 9.8 18.8 8.5 20.5 8.5C22.2 8.5 23.5 9.8 23.5 11.5C23.5 13.2 22.2 14.5 20.5 14.5Z" fill="white"/>
+  </svg>
+  <h1 style="font-size:28px;font-weight:700;color:#1a3c5e;margin:0">MecanicSystem</h1>
+</div>
+<p style="color:#888;font-size:14px;margin-top:4px">Sistema de gestão para oficinas mecânicas</p>
+</div>
+
+<div class="row g-3 justify-content-center">
+  <div class="col-md-4">
+    <a href="/clientes/" style="text-decoration:none">
+      <div class="stat-card text-center" style="cursor:pointer;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(26,111,196,0.15)'" onmouseout="this.style.boxShadow='none'">
+        <div style="font-size:32px;margin-bottom:10px">👥</div>
+        <div style="font-size:16px;font-weight:600;color:#1a3c5e">Clientes</div>
+        <div style="font-size:12px;color:#888;margin-top:4px">Cadastrar e consultar clientes</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a href="/estoque/" style="text-decoration:none">
+      <div class="stat-card text-center" style="cursor:pointer;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(26,111,196,0.15)'" onmouseout="this.style.boxShadow='none'">
+        <div style="font-size:32px;margin-bottom:10px">🔧</div>
+        <div style="font-size:16px;font-weight:600;color:#1a3c5e">Estoque</div>
+        <div style="font-size:12px;color:#888;margin-top:4px">Controle de peças e materiais</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a href="/ordens/" style="text-decoration:none">
+      <div class="stat-card text-center" style="cursor:pointer;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(26,111,196,0.15)'" onmouseout="this.style.boxShadow='none'">
+        <div style="font-size:32px;margin-bottom:10px">📋</div>
+        <div style="font-size:16px;font-weight:600;color:#1a3c5e">Ordens de Serviço</div>
+        <div style="font-size:12px;color:#888;margin-top:4px">Abrir e gerenciar OS</div>
+      </div>
+    </a>
+  </div>
+</div>
+{% endblock %}
