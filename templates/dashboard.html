@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load core_filters %}
+{% block titulo %}Dashboard - MecanicSystem{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block conteudo %}
+
+<!-- HEADER DO DASHBOARD -->
+<div style="margin-bottom: 28px;">
+  <h1 style="font-size: 28px; font-weight: 700; color: #1a3c5e; margin-bottom: 4px;">Dashboard</h1>
+  <p style="font-size: 13px; color: #888;">Resumo das operações e métricas em tempo real</p>
+</div>
+
+<!-- CARDS PRINCIPAIS - ROW 1 -->
+<div class="row mb-4">
+  <div class="col-md-6 col-lg-3 mb-3">
+    <div class="stat-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <div class="label">💰 Faturamento</div>
+          <div class="value" style="font-size: 26px;">R$ {{ faturamento_mes|br_format }}</div>
+          <div class="sub">Mês atual</div>
+        </div>
+        <div style="font-size: 32px; opacity: 0.2;">💵</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-3">
+    <div class="stat-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <div class="label">📊 Ticket Médio</div>
+          <div class="value" style="font-size: 26px;">R$ {{ ticket_medio|br_format }}</div>
+          <div class="sub">Por ordem de serviço</div>
+        </div>
+        <div style="font-size: 32px; opacity: 0.2;">📈</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-3">
+    <div class="stat-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <div class="label">📋 Ordens Concluídas</div>
+          <div class="value" style="font-size: 26px;">{{ os_concluidas }}</div>
+          <div class="sub">Este mês</div>
+        </div>
+        <div style="font-size: 32px; opacity: 0.2;">✅</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-3">
+    <div class="stat-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <div class="label">👥 Clientes Ativos</div>
+          <div class="value" style="font-size: 26px;">{{ total_clientes }}</div>
+          <div class="sub">Total cadastrado</div>
+        </div>
+        <div style="font-size: 32px; opacity: 0.2;">👨</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS OPERACIONAL -->
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="stat-card">
+      <div class="label">⚙️ Em Andamento</div>
+      <div class="value">{{ os_andamento }}</div>
+      <div class="sub" style="color: #5ba4cf;">Órdenes sendo processadas</div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="stat-card">
+      <div class="label">⏳ Aguardando Peça</div>
+      <div class="value">{{ os_aguardando }}</div>
+      <div class="sub" style="color: #ff9800;">Pendente de material</div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="stat-card">
+      <div class="label">🔧 Mão de Obra</div>
+      <div class="value">R$ {{ receita_mao_obra|floatformat:2 }}</div>
+      <div class="sub">Do faturamento total</div>
+    </div>
+  </div>
+</div>
+
+<!-- LINHA DIVÓRIA -->
+<div style="height: 1px; background: #e8e8e8; margin: 28px 0;"></div>
+
+<!-- ALERTAS E INFORMAÇÕES -->
+<div class="row mb-4">
+  <div class="col-md-6 mb-3">
+    <!-- ALERTAS DE ESTOQUE -->
+    {% if pecas_baixo_estoque %}
+    <div class="card-table">
+      <div class="card-top">
+        <h3 style="font-size: 14px; font-weight: 600; color: #c5221f; margin: 0;">⚠️ Alertas de Estoque</h3>
+        <span style="font-size: 11px; background: #fce8e6; color: #c5221f; padding: 2px 8px; border-radius: 12px; font-weight: 500;">{{ alertas_estoque }} peças</span>
+      </div>
+      <div style="padding: 12px 16px; max-height: 300px; overflow-y: auto;">
+        {% for peca in pecas_baixo_estoque|slice:":5" %}
+        <div style="padding: 10px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 12px; font-weight: 500; color: #333;">{{ peca.nome }}</div>
+            <div style="font-size: 11px; color: #888; margin-top: 2px;">
+              Atual: <strong>{{ peca.quantidade }}</strong> | Mín: <strong>{{ peca.estoque_minimo }}</strong>
+            </div>
+          </div>
+          <div style="background: #fce8e6; color: #c5221f; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
+            ⚠️
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div style="padding: 12px 16px; border-top: 1px solid #f5f5f5; background: #fafafa; text-align: center;">
+        <a href="/estoque/" style="font-size: 11px; color: #1a6fc4; text-decoration: none; font-weight: 500;">Ver estoque completo →</a>
+      </div>
+    </div>
+    {% else %}
+    <div class="card-table">
+      <div class="card-top">
+        <h3 style="font-size: 14px; font-weight: 600; color: #52a852; margin: 0;">✓ Estoque OK</h3>
+      </div>
+      <div style="padding: 24px; text-align: center; color: #52a852;">
+        <div style="font-size: 24px; margin-bottom: 8px;">✅</div>
+        <p style="font-size: 12px; margin: 0;">Todas as peças estão acima do mínimo</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <!-- RESUMO DE ORDENS -->
+    <div class="card-table">
+      <div class="card-top">
+        <h3 style="font-size: 14px; font-weight: 600; color: #1a3c5e; margin: 0;">📋 Resumo de Ordens</h3>
+      </div>
+      <div style="padding: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="background: #f0f4ff; padding: 12px; border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Total do Mês</div>
+            <div style="font-size: 18px; font-weight: 600; color: #1a3c5e;">{{ total_os_mes }}</div>
+          </div>
+          <div style="background: #e6f4ea; padding: 12px; border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Concluídas</div>
+            <div style="font-size: 18px; font-weight: 600; color: #137333;">{{ os_concluidas }}</div>
+          </div>
+          <div style="background: #fff5e0; padding: 12px; border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Em Andamento</div>
+            <div style="font-size: 18px; font-weight: 600; color: #b06000;">{{ os_andamento }}</div>
+          </div>
+          <div style="background: #fef7e0; padding: 12px; border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Aguardando</div>
+            <div style="font-size: 18px; font-weight: 600; color: #ff9800;">{{ os_aguardando }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AÇÕES RÁPIDAS -->
+<div style="background: white; border-radius: 10px; border: 1px solid #e8e8e8; padding: 16px; margin-bottom: 24px;">
+  <h3 style="font-size: 13px; font-weight: 600; color: #1a3c5e; margin-bottom: 12px;">🚀 Ações Rápidas</h3>
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <a href="/ordens/adicionar/" style="background: #1a6fc4; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500; text-decoration: none; display: inline-block;">+ Nova OS</a>
+    <a href="/clientes/adicionar/" style="background: #52a852; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500; text-decoration: none; display: inline-block;">+ Novo Cliente</a>
+    <a href="/estoque/adicionar/" style="background: #5ba4cf; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500; text-decoration: none; display: inline-block;">+ Nova Peça</a>
+    <a href="/configuracoes/editar/" style="background: #888; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500; text-decoration: none; display: inline-block;">⚙️ Configurações</a>
+  </div>
+</div>
+
+{% endblock %}

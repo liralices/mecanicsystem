@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load core_filters %}
 {% block titulo %}Nova OS - MecaSystem{% endblock %}
 {% block nav_ordens %}active{% endblock %}
 
@@ -29,29 +30,33 @@
     </div>
     <div class="mb-3">
       <label class="form-label">Mão de obra (R$)</label>
-      <input type="text" name="mao_de_obra" class="form-control" placeholder="Ex: 150.00" value="0.00">
+      <input type="text" name="mao_de_obra" class="form-control" placeholder="Ex: 150,00" value="0,00">
     </div>
 
     {% if pecas %}
     <div class="mb-3">
       <label class="form-label">Peças utilizadas</label>
+      <div class="mb-3">
+        <select id="pecaSelect" class="form-control">
+          <option value="">Selecione uma peça para adicionar...</option>
+          {% for peca in pecas %}
+          <option value="{{ peca.id }}" data-nome="{{ peca.nome }}" data-preco="{{ peca.preco_venda }}">{{ peca.nome }} - R$ {{ peca.preco_venda|br_format }}</option>
+          {% endfor %}
+        </select>
+        <button type="button" id="addPecaBtn" class="btn btn-secondary mt-2">Adicionar Peça</button>
+      </div>
       <div class="table-responsive">
-        <table class="table table-bordered" style="font-size:13px">
+        <table class="table table-bordered" style="font-size:13px" id="pecasTable">
           <thead>
             <tr style="background:#fafafa">
               <th>Peça</th>
               <th>Preço unit.</th>
               <th style="width:120px">Quantidade</th>
+              <th style="width:50px">Ação</th>
             </tr>
           </thead>
-          <tbody>
-            {% for peca in pecas %}
-            <tr>
-              <td>{{ peca.nome }}</td>
-              <td>R$ {{ peca.preco_venda }}</td>
-              <td><input type="number" name="peca_{{ peca.id }}" value="0" min="0" class="form-control form-control-sm"></td>
-            </tr>
-            {% endfor %}
+          <tbody id="pecasTbody">
+            <!-- Peças serão adicionadas aqui via JavaScript -->
           </tbody>
         </table>
       </div>
@@ -64,4 +69,52 @@
     </div>
   </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pecaSelect = document.getElementById('pecaSelect');
+    const addPecaBtn = document.getElementById('addPecaBtn');
+    const pecasTbody = document.getElementById('pecasTbody');
+    let pecasAdicionadas = new Set();
+
+    // Adicionar as primeiras 5 peças inicialmente
+    const options = Array.from(pecaSelect.options).slice(1, 6); // Ignorar a primeira opção vazia
+    options.forEach(option => {
+        if (option.value) {
+            adicionarPeca(option.value, option.dataset.nome, option.dataset.preco);
+        }
+    });
+
+    addPecaBtn.addEventListener('click', function() {
+        const selectedOption = pecaSelect.options[pecaSelect.selectedIndex];
+        if (selectedOption.value && !pecasAdicionadas.has(selectedOption.value)) {
+            const precoFormatado = parseFloat(selectedOption.dataset.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            adicionarPeca(selectedOption.value, selectedOption.dataset.nome, selectedOption.dataset.preco, precoFormatado);
+            pecaSelect.selectedIndex = 0; // Reset select
+        }
+    });
+
+    function adicionarPeca(id, nome, preco, precoFormatado) {
+        if (pecasAdicionadas.has(id)) return;
+        pecasAdicionadas.add(id);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${nome}</td>
+            <td>R$ ${precoFormatado}</td>
+            <td><input type="number" name="peca_${id}" value="0" min="0" class="form-control form-control-sm"></td>
+            <td><button type="button" class="btn btn-sm btn-danger remove-peca" data-id="${id}">X</button></td>
+        `;
+        pecasTbody.appendChild(row);
+
+        // Adicionar evento para remover
+        row.querySelector('.remove-peca').addEventListener('click', function() {
+            pecasAdicionadas.delete(id);
+            row.remove();
+        });
+    }
+});
+</script>
 {% endblock %}

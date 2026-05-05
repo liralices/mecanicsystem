@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load core_filters %}
+{% block titulo %}Editar Peça - MecanicSystem{% endblock %}
+{% block nav_estoque %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Editar Peça</div>
+    <div class="page-sub">Atualize os dados da peça</div>
+  </div>
+  <a href="/estoque/" class="btn-cancelar">← Voltar</a>
+</div>
+<div class="form-card" style="max-width:600px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Nome da peça *</label>
+      <input type="text" name="nome" class="form-control" value="{{ peca.nome }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Código da peça</label>
+      <input type="text" name="codigo" class="form-control" value="{{ peca.codigo }}" readonly>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Quantidade</label>
+        <input type="number" name="quantidade" class="form-control" value="{{ peca.quantidade }}">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Estoque mínimo</label>
+        <input type="number" name="estoque_minimo" class="form-control" value="{{ peca.estoque_minimo }}">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Fornecedor</label>
+        <input type="text" name="fornecedor" class="form-control" value="{{ peca.fornecedor }}">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Preço de custo (R$)</label>
+        <input type="text" name="preco_custo" class="form-control" value="{{ peca.preco_custo|br_format }}">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Preço de venda (R$)</label>
+        <input type="text" name="preco_venda" class="form-control" value="{{ peca.preco_venda|br_format }}">
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn-salvar">Salvar alterações</button>
+      <a href="/estoque/" class="btn-cancelar">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

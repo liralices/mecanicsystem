@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load core_filters %}
 {% block titulo %}Ordens de Serviço - MecaSystem{% endblock %}
 {% block nav_ordens %}active{% endblock %}
 
@@ -32,9 +33,11 @@
         <th>Nº OS</th>
         <th>Cliente</th>
         <th>Descrição</th>
+        <th>Status</th>
         <th>Data</th>
         <th>Mão de obra</th>
         <th>Total</th>
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -46,13 +49,29 @@
           {{ ordem.cliente.nome }}
         </td>
         <td>{{ ordem.descricao|truncatechars:40 }}</td>
+        <td>
+          {% if ordem.status == 'concluida' %}
+            <span style="background:#e6f4ea;color:#137333;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:500">Concluída</span>
+          {% elif ordem.status == 'em_andamento' %}
+            <span style="background:#fef7e0;color:#b06000;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:500">Em andamento</span>
+          {% elif ordem.status == 'aguardando_peca' %}
+            <span style="background:#fce8e6;color:#c5221f;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:500">Aguardando peça</span>
+          {% else %}
+            <span style="background:#e8f0fe;color:#1a6fc4;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:500">Aberta</span>
+          {% endif %}
+        </td>
         <td>{{ ordem.data }}</td>
-        <td>R$ {{ ordem.mao_de_obra }}</td>
-        <td><strong>R$ {{ ordem.valor_total }}</strong></td>
+        <td>R$ {{ ordem.mao_de_obra|br_format }}</td>
+        <td><strong>R$ {{ ordem.valor_total|br_format }}</strong></td>
+        <td>
+          <a href="/ordens/editar/{{ ordem.id }}/" class="btn-edit">Editar</a>
+          &nbsp;
+          <a href="/ordens/excluir/{{ ordem.id }}/" class="btn-del" style="text-decoration:none;padding:4px 10px;font-size:11px">Excluir</a>
+        </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="6" class="text-center py-4" style="color:#888;font-size:13px">
+        <td colspan="8" class="text-center py-4" style="color:#888;font-size:13px">
           Nenhuma ordem cadastrada.
           <a href="/ordens/adicionar/" style="color:#1a6fc4">Criar agora</a>
         </td>
@@ -73,3 +92,4 @@ function filtrar() {
 }
 </script>
 {% endblock %}
+
