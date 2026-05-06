@@ -2,22 +2,25 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import OrdemServico, ItemOS
 from clientes.models import Cliente
 from estoque.models import Peca
+from decimal import Decimal
 
 def listar_ordens(request):
-    # Ordem decrescente por valor total
     ordens = OrdemServico.objects.order_by('-valor_total')
     return render(request, 'ordens/listar.html', {'ordens': ordens})
 
 def adicionar_ordem(request):
     clientes = Cliente.objects.all()
-    pecas = Peca.objects.all()
+    pecas = Peca.objects.all().order_by('nome')
     if request.method == 'POST':
         cliente = Cliente.objects.get(id=request.POST['cliente'])
+        mao_de_obra = Decimal(request.POST['mao_de_obra'].replace(',', '.'))
+        concluida = request.POST.get('concluida') == 'on'
         ordem = OrdemServico.objects.create(
             cliente=cliente,
             descricao=request.POST['descricao'],
-            mao_de_obra=request.POST['mao_de_obra'].replace(',', '.'),
-            status=request.POST.get('status', 'aberta')
+            mao_de_obra=mao_de_obra,
+            status=request.POST.get('status', 'aberta'),
+            concluida=concluida
         )
         for peca in pecas:
             qtd = request.POST.get(f'peca_{peca.id}')
@@ -37,8 +40,9 @@ def editar_ordem(request, id):
     if request.method == 'POST':
         ordem.cliente = Cliente.objects.get(id=request.POST['cliente'])
         ordem.descricao = request.POST['descricao']
-        ordem.mao_de_obra = request.POST['mao_de_obra'].replace(',', '.')
+        ordem.mao_de_obra = Decimal(request.POST['mao_de_obra'].replace(',', '.'))
         ordem.status = request.POST.get('status', 'aberta')
+        ordem.concluida = request.POST.get('concluida') == 'on'
         ordem.save()
         ordem.calcular_total()
         return redirect('listar_ordens')
@@ -50,4 +54,15 @@ def excluir_ordem(request, id):
         ordem.delete()
         return redirect('listar_ordens')
     return render(request, 'ordens/confirmar_exclusao.html', {'ordem': ordem})
+
+from django.http import JsonResponse
+
+def toggle_concluida(request, id):
+    if request.method == 'POST':
+        ordem = get_object_or_404(OrdemServico, id=id)
+        ordem.concluida = not ordem.concluida
+        ordem.save()
+        return JsonResponse({'concluida': ordem.concluida})
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+
 
