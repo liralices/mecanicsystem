@@ -162,9 +162,46 @@
     <h3 style="font-size: 16px; font-weight: 600; color: #1a3c5e; margin: 0;">📋 Últimas Ordens de Serviço</h3>
     <a href="/ordens/" style="font-size: 12px; color: #1a6fc4; text-decoration: none; font-weight: 500;">Ver todas →</a>
   </div>
-  <div style="padding: 16px; text-align: center; color: #888; font-size: 13px;">
-    <p>Últimas ordens aparecerão aqui...</p>
+  {% if os_recentes %}
+  <div style="overflow-x: auto;">
+    <table class="table" style="margin: 0; font-size: 13px;">
+      <thead>
+        <tr>
+          <th>Nº OS</th>
+          <th>Cliente</th>
+          <th>Status</th>
+          <th>Data</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ordem in os_recentes %}
+        <tr>
+          <td><strong>#{{ ordem.id }}</strong></td>
+          <td>{{ ordem.cliente.nome }}</td>
+          <td>
+            {% if ordem.status == 'concluida' %}
+              <span style="background:#e6f4ea;color:#137333;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500">Concluída</span>
+            {% elif ordem.status == 'em_andamento' %}
+              <span style="background:#fef7e0;color:#b06000;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500">Em andamento</span>
+            {% elif ordem.status == 'aguardando_peca' %}
+              <span style="background:#fce8e6;color:#c5221f;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500">Aguardando peça</span>
+            {% else %}
+              <span style="background:#e8f0fe;color:#1a6fc4;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500">Aberta</span>
+            {% endif %}
+          </td>
+          <td>{{ ordem.data }}</td>
+          <td><strong>R$ {{ ordem.valor_total|br_format }}</strong></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+  {% else %}
+  <div style="padding: 16px; text-align: center; color: #888; font-size: 13px;">
+    <p>Nenhuma ordem de serviço cadastrada.</p>
+  </div>
+  {% endif %}
 </div>
 
 {% endblock %}
