@@ -6,7 +6,6 @@ urlpatterns = [
     path('adicionar/', views.adicionar_ordem, name='adicionar_ordem'),
     path('editar/<int:id>/', views.editar_ordem, name='editar_ordem'),
     path('excluir/<int:id>/', views.excluir_ordem, name='excluir_ordem'),
-    path('toggle_concluida/<int:id>/', views.toggle_concluida, name='toggle_concluida'),
 ]
 
 

@@ -4,6 +4,13 @@ from .models import OrdemServico, ItemOS
 from clientes.models import Cliente, Veiculo
 from estoque.models import Peca
 from decimal import Decimal
+import re
+
+def converter_valor_monetario(valor_str):
+    """Converte valor monetário brasileiro (1.234,56) para Decimal"""
+    # Remove pontos (separadores de milhares) e troca vírgula por ponto
+    valor_limpo = re.sub(r'\.', '', valor_str).replace(',', '.')
+    return Decimal(valor_limpo)
 
 def listar_ordens(request):
     ordens = OrdemServico.objects.order_by('-valor_total')
@@ -28,13 +35,9 @@ def adicionar_ordem(request):
             cliente = Cliente.objects.get(id=request.POST['cliente'])
             veiculo_id = request.POST.get('veiculo')
             veiculo = Veiculo.objects.get(id=veiculo_id) if veiculo_id else None
-            mao_de_obra = Decimal(request.POST['mao_de_obra'].replace(',', '.'))
+            mao_de_obra = converter_valor_monetario(request.POST['mao_de_obra'])
             
-            # Se marcou "concluida", seta o status como concluida, senão usa o status padrão
-            if request.POST.get('concluida') == 'on':
-                status = 'concluida'
-            else:
-                status = request.POST.get('status', 'aberta')
+            status = request.POST.get('status', 'aberta')
 
             ordem = OrdemServico.objects.create(
                 cliente=cliente,
@@ -77,13 +80,9 @@ def editar_ordem(request, id):
         veiculo_id = request.POST.get('veiculo')
         ordem.veiculo = Veiculo.objects.get(id=veiculo_id) if veiculo_id else None
         ordem.descricao = request.POST['descricao']
-        ordem.mao_de_obra = Decimal(request.POST['mao_de_obra'].replace(',', '.'))
+        ordem.mao_de_obra = converter_valor_monetario(request.POST['mao_de_obra'])
         
-        # Se marcou "concluida", seta o status como concluida, senão usa o status padrão
-        if request.POST.get('concluida') == 'on':
-            ordem.status = 'concluida'
-        else:
-            ordem.status = request.POST.get('status', 'aberta')
+        ordem.status = request.POST.get('status', 'aberta')
         
         ordem.save()
         ordem.calcular_total()
@@ -105,15 +104,5 @@ def excluir_ordem(request, id):
         ordem.delete()
         return redirect('listar_ordens')
     return render(request, 'ordens/confirmar_exclusao.html', {'ordem': ordem})
-
-
-def toggle_concluida(request, id):
-    if request.method == 'POST':
-        ordem = get_object_or_404(OrdemServico, id=id)
-        # Alterna o status entre "concluida" e "aberta"
-        ordem.status = 'aberta' if ordem.status == 'concluida' else 'concluida'
-        ordem.save()
-        return JsonResponse({'status': ordem.status})
-    return JsonResponse({'error': 'Método não permitido'}, status=405)
 
 
