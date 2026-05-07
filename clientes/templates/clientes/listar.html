@@ -46,10 +46,12 @@
         <td>{{ cliente.telefone|default:"—" }}</td>
         <td>{{ cliente.email|default:"—" }}</td>
         <td>
-          <a href="/clientes/{{ cliente.id }}/veiculos/" style="color:#1a6fc4;text-decoration:none;font-weight:500;font-size:12px">{{ cliente.veiculos.count }} veículo(s)</a>
+          <a href="/clientes/detalhe/{{ cliente.id }}/" style="color:#1a6fc4;text-decoration:none;font-weight:500;font-size:12px">
+            {{ cliente.veiculos.count }} veículo(s)
+          </a>
         </td>
         <td>
-          <a href="/clientes/{{ cliente.id }}/veiculos/" class="btn-edit" style="font-size:11px">Veículos</a>
+          <a href="/clientes/editar/{{ cliente.id }}/" class="btn-edit" style="font-size:11px;text-decoration:none">Editar</a>
           &nbsp;
           <a href="/clientes/excluir/{{ cliente.id }}/" class="btn-del" style="padding:4px 10px;font-size:11px;text-decoration:none">Excluir</a>
         </td>

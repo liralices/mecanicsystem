@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %}Editar Cliente - MecaSystem{% endblock %}
+{% block nav_clientes %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Editar Cliente</div>
+    <div class="page-sub">Atualize as informações do cliente</div>
+  </div>
+  <a href="/clientes/" class="btn-cancelar">← Voltar</a>
+</div>
+
+<div class="form-card" style="max-width:600px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Nome completo *</label>
+      <input type="text" name="nome" class="form-control" value="{{ cliente.nome }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Telefone</label>
+      <input type="text" name="telefone" class="form-control" value="{{ cliente.telefone }}" placeholder="Ex: (11) 99999-0001">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" name="email" class="form-control" value="{{ cliente.email }}" placeholder="Ex: joao@email.com">
+    </div>
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn-salvar">Salvar Alterações</button>
+      <a href="/clientes/" class="btn-cancelar">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

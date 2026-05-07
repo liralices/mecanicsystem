@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load core_filters %}
 {% block titulo %}Novo Veículo - MecaSystem{% endblock %}
 {% block nav_clientes %}active{% endblock %}
 
@@ -9,7 +8,7 @@
     <div class="page-title">Novo Veículo</div>
     <div class="page-sub">Cadastre um veículo para {{ cliente.nome }}</div>
   </div>
-  <a href="/clientes/{{ cliente.id }}/veiculos/" class="btn-cancelar">← Voltar</a>
+  <a href="/clientes/detalhe/{{ cliente.id }}/" class="btn-cancelar">← Voltar</a>
 </div>
 
 <div class="form-card" style="max-width:600px">
@@ -43,11 +42,11 @@
       <label class="form-label">Quilometragem atual</label>
       <input type="number" name="quilometragem" class="form-control" placeholder="0" value="0" min="0">
     </div>
-
     <div class="d-flex gap-2 mt-4">
       <button type="submit" class="btn-salvar">Salvar Veículo</button>
-      <a href="/clientes/{{ cliente.id }}/veiculos/" class="btn-cancelar">Cancelar</a>
+      <a href="/clientes/detalhe/{{ cliente.id }}/" class="btn-cancelar">Cancelar</a>
     </div>
   </form>
 </div>
 {% endblock %}
+

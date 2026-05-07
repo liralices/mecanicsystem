@@ -10,16 +10,12 @@ class Cliente(models.Model):
 
 class Veiculo(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='veiculos')
-    placa = models.CharField(max_length=10, unique=True)
-    marca = models.CharField(max_length=50)
+    placa = models.CharField(max_length=10)
     modelo = models.CharField(max_length=100)
+    marca = models.CharField(max_length=100)
     ano = models.IntegerField()
-    cor = models.CharField(max_length=30, blank=True)
+    cor = models.CharField(max_length=50, blank=True)
     quilometragem = models.IntegerField(default=0)
-    data_cadastro = models.DateField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-data_cadastro']
 
     def __str__(self):
-        return f"{self.marca} {self.modelo} ({self.placa})"
+        return f"{self.placa} — {self.marca} {self.modelo} ({self.ano})"

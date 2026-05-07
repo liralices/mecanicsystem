@@ -24,12 +24,50 @@
     </div>
     <div class="mb-3">
       <label class="form-label">Veículo</label>
-      <select name="veiculo" id="veiculoSelect" class="form-control">
-        <option value="">Selecione um veículo...</option>
-        {% for veiculo in veiculos %}
-          <option value="{{ veiculo.id }}" data-cliente="{{ veiculo.cliente.id }}" {% if veiculo.id == ordem.veiculo.id %}selected{% endif %}>{{ veiculo.marca }} {{ veiculo.modelo }} - {{ veiculo.placa }}</option>
-        {% endfor %}
-      </select>
+      <div style="display:flex;gap:10px">
+        <select name="veiculo" id="veiculoSelect" class="form-control" onchange="exibirInformacoesVeiculo()">
+          <option value="">Selecione um veículo...</option>
+          {% for veiculo in veiculos %}
+            <option value="{{ veiculo.id }}" data-cliente="{{ veiculo.cliente.id }}" {% if veiculo.id == ordem.veiculo.id %}selected{% endif %}>{{ veiculo.marca }} {{ veiculo.modelo }} - {{ veiculo.placa }}</option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn-novo" id="novoVeiculoBtn" style="padding:8px 16px;white-space:nowrap" onclick="abrirModalVeiculo()">+ Novo</button>
+      </div>
+    </div>
+
+    <!-- Campos de informações do veículo -->
+    <div id="infoVeiculoContainer" style="display:none;background:#f8fbff;border-radius:8px;padding:16px;border-left:4px solid #1a6fc4;margin-bottom:20px">
+      <div style="font-size:12px;color:#666;text-transform:uppercase;font-weight:600;margin-bottom:12px">Informações do Veículo</div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label" style="font-size:12px">Placa</label>
+          <input type="text" class="form-control" id="infoPlaca" readonly style="background:#fff;border:1px solid #ddd">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" style="font-size:12px">Ano</label>
+          <input type="text" class="form-control" id="infoAno" readonly style="background:#fff;border:1px solid #ddd">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label" style="font-size:12px">Marca</label>
+          <input type="text" class="form-control" id="infoMarca" readonly style="background:#fff;border:1px solid #ddd">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" style="font-size:12px">Modelo</label>
+          <input type="text" class="form-control" id="infoModelo" readonly style="background:#fff;border:1px solid #ddd">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label" style="font-size:12px">Cor</label>
+          <input type="text" class="form-control" id="infoCor" readonly style="background:#fff;border:1px solid #ddd">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" style="font-size:12px">Quilometragem</label>
+          <input type="text" class="form-control" id="infoQuilometragem" readonly style="background:#fff;border:1px solid #ddd">
+        </div>
+      </div>
     </div>
     <div class="mb-3">
       <label class="form-label">Descrição do serviço *</label>
@@ -65,6 +103,48 @@
   </form>
 </div>
 
+<!-- Modal para novo veículo -->
+<div id="modalNovoVeiculo" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;justify-content:center;align-items:center">
+  <div style="background:#fff;border-radius:10px;padding:24px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:18px;font-weight:600;color:#1a3c5e">Novo Veículo</div>
+      <button type="button" onclick="fecharModalVeiculo()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#999">&times;</button>
+    </div>
+    <form id="formNovoVeiculo">
+      <div class="mb-3">
+        <label class="form-label">Placa *</label>
+        <input type="text" id="placaVeiculo" class="form-control" placeholder="Ex: ABC-1234" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Marca *</label>
+        <input type="text" id="marcaVeiculo" class="form-control" placeholder="Ex: Toyota" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Modelo *</label>
+        <input type="text" id="modeloVeiculo" class="form-control" placeholder="Ex: Corolla" required>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Ano *</label>
+          <input type="number" id="anoVeiculo" class="form-control" placeholder="Ex: 2023" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Cor</label>
+          <input type="text" id="corVeiculo" class="form-control" placeholder="Ex: Preto">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Quilometragem</label>
+        <input type="number" id="quilometragemVeiculo" class="form-control" placeholder="Ex: 50000" value="0">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button type="button" onclick="salvarNovoVeiculo()" class="btn-salvar" style="flex:1">Salvar Veículo</button>
+        <button type="button" onclick="fecharModalVeiculo()" class="btn-cancelar" style="flex:1">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 function atualizarVeiculos() {
     const clienteSelect = document.getElementById('clienteSelect');
@@ -73,6 +153,7 @@ function atualizarVeiculos() {
     
     // Limpar seleção de veículo
     veiculoSelect.value = '';
+    document.getElementById('infoVeiculoContainer').style.display = 'none';
     
     // Mostrar/ocultar opções de veículos baseado no cliente selecionado
     Array.from(veiculoSelect.options).forEach(option => {
@@ -84,9 +165,102 @@ function atualizarVeiculos() {
     });
 }
 
+function exibirInformacoesVeiculo() {
+    const veiculoSelect = document.getElementById('veiculoSelect');
+    const selectedOption = veiculoSelect.options[veiculoSelect.selectedIndex];
+    const infoContainer = document.getElementById('infoVeiculoContainer');
+    
+    if (selectedOption.value === '') {
+        infoContainer.style.display = 'none';
+        return;
+    }
+    
+    // Buscar informações do veículo via AJAX
+    fetch(`/clientes/veiculo-info/${selectedOption.value}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('infoPlaca').value = data.placa || '—';
+            document.getElementById('infoAno').value = data.ano || '—';
+            document.getElementById('infoMarca').value = data.marca || '—';
+            document.getElementById('infoModelo').value = data.modelo || '—';
+            document.getElementById('infoCor').value = data.cor || '—';
+            document.getElementById('infoQuilometragem').value = (data.quilometragem || 0) + ' km';
+            infoContainer.style.display = 'block';
+        })
+        .catch(error => console.error('Erro ao carregar veículo:', error));
+}
+
+function abrirModalVeiculo() {
+    const clienteSelect = document.getElementById('clienteSelect');
+    if (!clienteSelect.value) {
+        alert('Selecione um cliente primeiro!');
+        return;
+    }
+    document.getElementById('modalNovoVeiculo').style.display = 'flex';
+}
+
+function fecharModalVeiculo() {
+    document.getElementById('modalNovoVeiculo').style.display = 'none';
+    document.getElementById('formNovoVeiculo').reset();
+}
+
+function salvarNovoVeiculo() {
+    const clienteId = document.getElementById('clienteSelect').value;
+    const placa = document.getElementById('placaVeiculo').value.toUpperCase();
+    const marca = document.getElementById('marcaVeiculo').value;
+    const modelo = document.getElementById('modeloVeiculo').value;
+    const ano = document.getElementById('anoVeiculo').value;
+    const cor = document.getElementById('corVeiculo').value;
+    const quilometragem = document.getElementById('quilometragemVeiculo').value || 0;
+
+    if (!placa || !marca || !modelo || !ano) {
+        alert('Preencha todos os campos obrigatórios (Placa, Marca, Modelo, Ano)!');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('cliente', clienteId);
+    formData.append('placa', placa);
+    formData.append('marca', marca);
+    formData.append('modelo', modelo);
+    formData.append('ano', ano);
+    formData.append('cor', cor);
+    formData.append('quilometragem', quilometragem);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch('/clientes/criar-veiculo/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Adicionar novo veículo ao select
+            const veiculoSelect = document.getElementById('veiculoSelect');
+            const option = document.createElement('option');
+            option.value = data.veiculo_id;
+            option.textContent = `${marca} ${modelo} - ${placa}`;
+            option.dataset.cliente = clienteId;
+            veiculoSelect.appendChild(option);
+            veiculoSelect.value = data.veiculo_id;
+            
+            fecharModalVeiculo();
+            exibirInformacoesVeiculo();
+            alert('Veículo cadastrado com sucesso!');
+        } else {
+            alert('Erro: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao salvar veículo!');
+    });
+}
+
 // Executar ao carregar a página para filtrar os veículos do cliente selecionado
 document.addEventListener('DOMContentLoaded', function() {
     atualizarVeiculos();
+    exibirInformacoesVeiculo();
 });
 </script>
 {% endblock %}
