@@ -17,10 +17,19 @@
     {% csrf_token %}
     <div class="mb-3">
       <label class="form-label">Cliente *</label>
-      <select name="cliente" class="form-control" required>
+      <select name="cliente" id="clienteSelect" class="form-control" required onchange="atualizarVeiculos()">
         <option value="">Selecione um cliente...</option>
         {% for cliente in clientes %}
           <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Veículo</label>
+      <select name="veiculo" id="veiculoSelect" class="form-control">
+        <option value="">Selecione um veículo...</option>
+        {% for veiculo in veiculos %}
+          <option value="{{ veiculo.id }}" data-cliente="{{ veiculo.cliente.id }}">{{ veiculo.marca }} {{ veiculo.modelo }} - {{ veiculo.placa }}</option>
         {% endfor %}
       </select>
     </div>
@@ -116,5 +125,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function atualizarVeiculos() {
+    const clienteSelect = document.getElementById('clienteSelect');
+    const veiculoSelect = document.getElementById('veiculoSelect');
+    const clienteId = clienteSelect.value;
+    
+    // Limpar seleção de veículo
+    veiculoSelect.value = '';
+    
+    // Mostrar/ocultar opções de veículos baseado no cliente selecionado
+    Array.from(veiculoSelect.options).forEach(option => {
+        if (option.value === '') {
+            option.style.display = '';
+        } else {
+            option.style.display = option.dataset.cliente === clienteId ? '' : 'none';
+        }
+    });
+}
 </script>
 {% endblock %}

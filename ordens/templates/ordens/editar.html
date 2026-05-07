@@ -16,9 +16,18 @@
     {% csrf_token %}
     <div class="mb-3">
       <label class="form-label">Cliente *</label>
-      <select name="cliente" class="form-control" required>
+      <select name="cliente" id="clienteSelect" class="form-control" required onchange="atualizarVeiculos()">
         {% for cliente in clientes %}
           <option value="{{ cliente.id }}" {% if cliente.id == ordem.cliente.id %}selected{% endif %}>{{ cliente.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Veículo</label>
+      <select name="veiculo" id="veiculoSelect" class="form-control">
+        <option value="">Selecione um veículo...</option>
+        {% for veiculo in veiculos %}
+          <option value="{{ veiculo.id }}" data-cliente="{{ veiculo.cliente.id }}" {% if veiculo.id == ordem.veiculo.id %}selected{% endif %}>{{ veiculo.marca }} {{ veiculo.modelo }} - {{ veiculo.placa }}</option>
         {% endfor %}
       </select>
     </div>
@@ -55,4 +64,29 @@
     </div>
   </form>
 </div>
+
+<script>
+function atualizarVeiculos() {
+    const clienteSelect = document.getElementById('clienteSelect');
+    const veiculoSelect = document.getElementById('veiculoSelect');
+    const clienteId = clienteSelect.value;
+    
+    // Limpar seleção de veículo
+    veiculoSelect.value = '';
+    
+    // Mostrar/ocultar opções de veículos baseado no cliente selecionado
+    Array.from(veiculoSelect.options).forEach(option => {
+        if (option.value === '') {
+            option.style.display = '';
+        } else {
+            option.style.display = option.dataset.cliente === clienteId ? '' : 'none';
+        }
+    });
+}
+
+// Executar ao carregar a página para filtrar os veículos do cliente selecionado
+document.addEventListener('DOMContentLoaded', function() {
+    atualizarVeiculos();
+});
+</script>
 {% endblock %}

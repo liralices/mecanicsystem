@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Sum, Count, Avg
-from clientes.models import Cliente
+from clientes.models import Cliente, Veiculo
 from estoque.models import Peca
 from ordens.models import OrdemServico
 from configuracoes.models import ConfiguracaoOficina
@@ -51,6 +51,9 @@ def home(request):
     pecas_baixo_estoque = Peca.objects.filter(quantidade__lte=5)
     alertas_estoque = pecas_baixo_estoque.count()
 
+    # Indicadores de veículos
+    total_veiculos = Veiculo.objects.count()
+
     # OS recentes
     os_recentes = OrdemServico.objects.order_by('-id')[:5]
 
@@ -69,6 +72,7 @@ def home(request):
         'total_pecas': total_pecas,
         'alertas_estoque': alertas_estoque,
         'pecas_baixo_estoque': pecas_baixo_estoque,
+        'total_veiculos': total_veiculos,
         'os_recentes': os_recentes,
     }
 

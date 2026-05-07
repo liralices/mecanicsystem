@@ -32,7 +32,8 @@
         <th>Cliente</th>
         <th>Telefone</th>
         <th>Email</th>
-        <th>Status</th>
+        <th>Veículos</th>
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -45,14 +46,17 @@
         <td>{{ cliente.telefone|default:"—" }}</td>
         <td>{{ cliente.email|default:"—" }}</td>
         <td>
-          <span class="badge-ativo">Ativo</span>
+          <a href="/clientes/{{ cliente.id }}/veiculos/" style="color:#1a6fc4;text-decoration:none;font-weight:500;font-size:12px">{{ cliente.veiculos.count }} veículo(s)</a>
+        </td>
+        <td>
+          <a href="/clientes/{{ cliente.id }}/veiculos/" class="btn-edit" style="font-size:11px">Veículos</a>
           &nbsp;
           <a href="/clientes/excluir/{{ cliente.id }}/" class="btn-del" style="padding:4px 10px;font-size:11px;text-decoration:none">Excluir</a>
         </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="4" class="text-center py-4" style="color:#888;font-size:13px">
+        <td colspan="5" class="text-center py-4" style="color:#888;font-size:13px">
           Nenhum cliente cadastrado.
           <a href="/clientes/adicionar/" style="color:#1a6fc4">Cadastrar agora</a>
         </td>

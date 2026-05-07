@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import OrdemServico, ItemOS
-from clientes.models import Cliente
+from clientes.models import Cliente, Veiculo
 from estoque.models import Peca
 from decimal import Decimal
 
@@ -11,12 +11,18 @@ def listar_ordens(request):
 def adicionar_ordem(request):
     clientes = Cliente.objects.all()
     pecas = Peca.objects.all().order_by('nome')
+    veiculos = Veiculo.objects.all()
     if request.method == 'POST':
         cliente = Cliente.objects.get(id=request.POST['cliente'])
+        veiculo_id = request.POST.get('veiculo')
+        veiculo = None
+        if veiculo_id:
+            veiculo = Veiculo.objects.get(id=veiculo_id)
         mao_de_obra = Decimal(request.POST['mao_de_obra'].replace(',', '.'))
         concluida = request.POST.get('concluida') == 'on'
         ordem = OrdemServico.objects.create(
             cliente=cliente,
+            veiculo=veiculo,
             descricao=request.POST['descricao'],
             mao_de_obra=mao_de_obra,
             status=request.POST.get('status', 'aberta'),
@@ -32,13 +38,18 @@ def adicionar_ordem(request):
                 )
         ordem.calcular_total()
         return redirect('listar_ordens')
-    return render(request, 'ordens/adicionar.html', {'clientes': clientes, 'pecas': pecas})
+    return render(request, 'ordens/adicionar.html', {'clientes': clientes, 'pecas': pecas, 'veiculos': veiculos})
 
 def editar_ordem(request, id):
     ordem = get_object_or_404(OrdemServico, id=id)
     clientes = Cliente.objects.all()
+    veiculos = Veiculo.objects.all()
     if request.method == 'POST':
         ordem.cliente = Cliente.objects.get(id=request.POST['cliente'])
+        veiculo_id = request.POST.get('veiculo')
+        ordem.veiculo = None
+        if veiculo_id:
+            ordem.veiculo = Veiculo.objects.get(id=veiculo_id)
         ordem.descricao = request.POST['descricao']
         ordem.mao_de_obra = Decimal(request.POST['mao_de_obra'].replace(',', '.'))
         ordem.status = request.POST.get('status', 'aberta')
@@ -46,7 +57,7 @@ def editar_ordem(request, id):
         ordem.save()
         ordem.calcular_total()
         return redirect('listar_ordens')
-    return render(request, 'ordens/editar.html', {'ordem': ordem, 'clientes': clientes})
+    return render(request, 'ordens/editar.html', {'ordem': ordem, 'clientes': clientes, 'veiculos': veiculos})
 
 def excluir_ordem(request, id):
     ordem = get_object_or_404(OrdemServico, id=id)

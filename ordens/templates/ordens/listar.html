@@ -50,6 +50,14 @@
           <span class="avatar-circle">{{ ordem.cliente.nome|slice:":2"|upper }}</span>
           {{ ordem.cliente.nome }}
         </td>
+        <td>
+          {% if ordem.veiculo %}
+            {{ ordem.veiculo.marca }} {{ ordem.veiculo.modelo }}<br>
+            <small style="color:#666">{{ ordem.veiculo.placa }}</small>
+          {% else %}
+            <span style="color:#999;font-style:italic">Não informado</span>
+          {% endif %}
+        </td>
         <td>{{ ordem.descricao|truncatechars:40 }}</td>
         <td>
           {% if ordem.status == 'concluida' %}
