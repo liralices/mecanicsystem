@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load core_filters %}
+{% block titulo %}Funcionários - MecaSystem{% endblock %}
+{% block nav_configuracoes %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Funcionários</div>
+    <div class="page-sub">Gerencie os funcionários da oficina</div>
+  </div>
+  <a href="/configuracoes/funcionarios/adicionar/" class="btn-novo">+ Novo Funcionário</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    {% if funcionarios %}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Email</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for funcionario in funcionarios %}
+          <tr>
+            <td>{{ funcionario.nome }}</td>
+            <td>{{ funcionario.telefone|default:"—" }}</td>
+            <td>{{ funcionario.email|default:"—" }}</td>
+            <td>
+              <a href="/configuracoes/funcionarios/editar/{{ funcionario.id }}/" class="btn btn-sm btn-outline-primary">Editar</a>
+              <a href="/configuracoes/funcionarios/excluir/{{ funcionario.id }}/" class="btn btn-sm btn-outline-danger">Excluir</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <p class="text-muted">Nenhum funcionário cadastrado ainda.</p>
+      <a href="/configuracoes/funcionarios/adicionar/" class="btn btn-primary">Cadastrar Primeiro Funcionário</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -15,6 +15,7 @@ urlpatterns = [
     path('veiculos-json/<int:cliente_id>/', views.veiculos_json, name='veiculos_json'),
     path('veiculo-info/<int:veiculo_id>/', views.veiculo_info, name='veiculo_info'),
     path('criar-veiculo/', views.criar_veiculo, name='criar_veiculo'),
+    path('criar-cliente/', views.criar_cliente, name='criar_cliente'),
 ]
 
 

@@ -1,6 +1,7 @@
 from django.db import models
 from clientes.models import Cliente, Veiculo
 from estoque.models import Peca
+from configuracoes.models import Funcionario
 
 class OrdemServico(models.Model):
     STATUS_CHOICES = [
@@ -12,6 +13,7 @@ class OrdemServico(models.Model):
 
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     veiculo = models.ForeignKey(Veiculo, on_delete=models.SET_NULL, null=True, blank=True)
+    funcionario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, blank=True)
     data = models.DateField(auto_now_add=True)
     data_conclusao = models.DateField(null=True, blank=True)
     descricao = models.TextField()

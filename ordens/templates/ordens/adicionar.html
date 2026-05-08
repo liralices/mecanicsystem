@@ -17,13 +17,29 @@
     {% csrf_token %}
     <div class="mb-3">
       <label class="form-label">Cliente *</label>
-      <select name="cliente" id="clienteSelect" class="form-control" required onchange="atualizarVeiculos()">
-        <option value="">Selecione um cliente...</option>
-        {% for cliente in clientes %}
-          <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
-        {% endfor %}
-      </select>
+      <div style="display:flex;gap:10px">
+        <select name="cliente" id="clienteSelect" class="form-control" required onchange="atualizarVeiculos()">
+          <option value="">Selecione um cliente...</option>
+          {% for cliente in clientes %}
+            <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn-novo" id="novoClienteBtn" style="padding:8px 16px;white-space:nowrap" onclick="abrirModalCliente()">+ Novo</button>
+      </div>
     </div>
+    <div class="mb-3">
+      <label class="form-label">Funcionário</label>
+      <div style="display:flex;gap:10px">
+        <select name="funcionario" id="funcionarioSelect" class="form-control">
+          <option value="">Selecione um funcionário...</option>
+          {% for funcionario in funcionarios %}
+            <option value="{{ funcionario.id }}">{{ funcionario.nome }}</option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn-novo" id="novoFuncionarioBtn" style="padding:8px 16px;white-space:nowrap" onclick="abrirModalFuncionario()">+ Novo</button>
+      </div>
+    </div>
+
     <div class="mb-3">
       <label class="form-label">Veículo</label>
       <div style="display:flex;gap:10px">
@@ -163,6 +179,62 @@
       <div style="display:flex;gap:10px;margin-top:20px">
         <button type="button" onclick="salvarNovoVeiculo()" class="btn-salvar" style="flex:1">Salvar Veículo</button>
         <button type="button" onclick="fecharModalVeiculo()" class="btn-cancelar" style="flex:1">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal para novo cliente -->
+<div id="modalNovoCliente" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;justify-content:center;align-items:center">
+  <div style="background:#fff;border-radius:10px;padding:24px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:18px;font-weight:600;color:#1a3c5e">Novo Cliente</div>
+      <button type="button" onclick="fecharModalCliente()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#999">&times;</button>
+    </div>
+    <form id="formNovoCliente">
+      <div class="mb-3">
+        <label class="form-label">Nome *</label>
+        <input type="text" id="nomeCliente" class="form-control" placeholder="Ex: João Silva" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Telefone</label>
+        <input type="text" id="telefoneCliente" class="form-control" placeholder="Ex: (11) 99999-9999">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="emailCliente" class="form-control" placeholder="Ex: joao@email.com">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button type="button" onclick="salvarNovoCliente()" class="btn-salvar" style="flex:1">Salvar Cliente</button>
+        <button type="button" onclick="fecharModalCliente()" class="btn-cancelar" style="flex:1">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal para novo funcionário -->
+<div id="modalNovoFuncionario" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;justify-content:center;align-items:center">
+  <div style="background:#fff;border-radius:10px;padding:24px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:18px;font-weight:600;color:#1a3c5e">Novo Funcionário</div>
+      <button type="button" onclick="fecharModalFuncionario()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#999">&times;</button>
+    </div>
+    <form id="formNovoFuncionario">
+      <div class="mb-3">
+        <label class="form-label">Nome *</label>
+        <input type="text" id="nomeFuncionario" class="form-control" placeholder="Ex: João Silva" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Telefone</label>
+        <input type="text" id="telefoneFuncionario" class="form-control" placeholder="Ex: (11) 99999-9999">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="emailFuncionario" class="form-control" placeholder="Ex: joao@email.com">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button type="button" onclick="salvarNovoFuncionario()" class="btn-salvar" style="flex:1">Salvar Funcionário</button>
+        <button type="button" onclick="fecharModalFuncionario()" class="btn-cancelar" style="flex:1">Cancelar</button>
       </div>
     </form>
   </div>
@@ -314,6 +386,111 @@ function salvarNovoVeiculo() {
     .catch(error => {
         console.error('Erro:', error);
         alert('Erro ao salvar veículo!');
+    });
+}
+
+function abrirModalCliente() {
+    document.getElementById('modalNovoCliente').style.display = 'flex';
+}
+
+function fecharModalCliente() {
+    document.getElementById('modalNovoCliente').style.display = 'none';
+    document.getElementById('formNovoCliente').reset();
+}
+
+function salvarNovoCliente() {
+    const nome = document.getElementById('nomeCliente').value;
+    const telefone = document.getElementById('telefoneCliente').value;
+    const email = document.getElementById('emailCliente').value;
+
+    if (!nome) {
+        alert('Preencha o nome do cliente!');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('nome', nome);
+    formData.append('telefone', telefone);
+    formData.append('email', email);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch('/clientes/criar-cliente/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Adicionar novo cliente ao select
+            const clienteSelect = document.getElementById('clienteSelect');
+            const option = document.createElement('option');
+            option.value = data.cliente_id;
+            option.textContent = nome;
+            clienteSelect.appendChild(option);
+            clienteSelect.value = data.cliente_id;
+            
+            fecharModalCliente();
+            atualizarVeiculos(); // Atualizar veículos para o novo cliente
+            alert('Cliente cadastrado com sucesso!');
+        } else {
+            alert('Erro: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao salvar cliente!');
+    });
+}
+
+function abrirModalFuncionario() {
+    document.getElementById('modalNovoFuncionario').style.display = 'flex';
+}
+
+function fecharModalFuncionario() {
+    document.getElementById('modalNovoFuncionario').style.display = 'none';
+    document.getElementById('formNovoFuncionario').reset();
+}
+
+function salvarNovoFuncionario() {
+    const nome = document.getElementById('nomeFuncionario').value;
+    const telefone = document.getElementById('telefoneFuncionario').value;
+    const email = document.getElementById('emailFuncionario').value;
+
+    if (!nome) {
+        alert('Preencha o nome do funcionário!');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('nome', nome);
+    formData.append('telefone', telefone);
+    formData.append('email', email);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch('/configuracoes/criar-funcionario/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Adicionar novo funcionário ao select
+            const funcionarioSelect = document.getElementById('funcionarioSelect');
+            const option = document.createElement('option');
+            option.value = data.funcionario_id;
+            option.textContent = nome;
+            funcionarioSelect.appendChild(option);
+            funcionarioSelect.value = data.funcionario_id;
+            
+            fecharModalFuncionario();
+            alert('Funcionário cadastrado com sucesso!');
+        } else {
+            alert('Erro: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao salvar funcionário!');
     });
 }
 </script>

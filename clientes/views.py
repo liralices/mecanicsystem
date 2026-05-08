@@ -233,3 +233,27 @@ def criar_veiculo(request):
             })
     
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
+
+# Endpoint para criar novo cliente via AJAX
+def criar_cliente(request):
+    if request.method == 'POST':
+        try:
+            cliente = Cliente.objects.create(
+                nome=request.POST.get('nome', ''),
+                telefone=request.POST.get('telefone', ''),
+                email=request.POST.get('email', '')
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'cliente_id': cliente.id,
+                'message': 'Cliente criado com sucesso!'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})

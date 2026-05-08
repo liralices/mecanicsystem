@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load core_filters %}
+{% block titulo %}Editar Funcionário - MecaSystem{% endblock %}
+{% block nav_configuracoes %}active{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <div class="page-title">Editar Funcionário</div>
+    <div class="page-sub">Edite as informações do funcionário</div>
+  </div>
+  <a href="/configuracoes/funcionarios/" class="btn-cancelar">← Voltar</a>
+</div>
+
+<div class="form-card" style="max-width:600px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Nome *</label>
+      <input type="text" name="nome" class="form-control" value="{{ funcionario.nome }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Telefone</label>
+      <input type="text" name="telefone" class="form-control" value="{{ funcionario.telefone }}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" name="email" class="form-control" value="{{ funcionario.email }}">
+    </div>
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn-salvar">Salvar Alterações</button>
+      <a href="/configuracoes/funcionarios/" class="btn-cancelar">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
