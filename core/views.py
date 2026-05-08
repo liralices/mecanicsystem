@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from django.db.models import Sum, Count, Avg
 from clientes.models import Cliente, Veiculo
 from estoque.models import Peca
@@ -6,6 +9,7 @@ from ordens.models import OrdemServico
 from configuracoes.models import ConfiguracaoOficina
 from datetime import date, timedelta
 
+@login_required(login_url='login')
 def home(request):
     hoje = date.today()
     inicio_mes = hoje.replace(day=1)
@@ -77,3 +81,19 @@ def home(request):
     }
 
     return render(request, 'home.html', context)
+
+
+def registrar(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Usuário criado com sucesso. Faça login para continuar.')
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'register.html', {'form': form})

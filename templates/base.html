@@ -59,10 +59,22 @@
 </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto gap-1">
-          <li class="nav-item"><a class="nav-link {% block nav_clientes %}{% endblock %}" href="/clientes/">Clientes</a></li>
-          <li class="nav-item"><a class="nav-link {% block nav_veiculos %}{% endblock %}" href="{% url 'listar_veiculos' %}">Veículos</a></li>
-          <li class="nav-item"><a class="nav-link {% block nav_estoque %}{% endblock %}" href="/estoque/">Estoque</a></li>
-          <li class="nav-item"><a class="nav-link {% block nav_ordens %}{% endblock %}" href="/ordens/">Ordens de Serviço</a></li>
+          {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link {% block nav_clientes %}{% endblock %}" href="/clientes/">Clientes</a></li>
+            <li class="nav-item"><a class="nav-link {% block nav_veiculos %}{% endblock %}" href="{% url 'listar_veiculos' %}">Veículos</a></li>
+            <li class="nav-item"><a class="nav-link {% block nav_estoque %}{% endblock %}" href="/estoque/">Estoque</a></li>
+            <li class="nav-item"><a class="nav-link {% block nav_ordens %}{% endblock %}" href="/ordens/">Ordens de Serviço</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Olá, {{ user.username }}</a></li>
+            <li class="nav-item">
+              <form method="post" action="{% url 'logout' %}" style="display:inline; margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="nav-link" style="background:none; border:none; padding:6px 12px; color: rgba(255,255,255,0.7); cursor:pointer;">Sair</button>
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'registrar' %}">Registrar</a></li>
+          {% endif %}
         </ul>
       </div>
     </div>

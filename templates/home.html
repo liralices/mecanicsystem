@@ -34,36 +34,36 @@
 </div>
 
 <!-- INDICADORES PRINCIPAIS -->
-<div class="row mb-4">
-  <div class="col-md-6 col-lg-3 mb-3">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-3 mb-4">
+  <div class="col">
     <div class="stat-card">
       <div class="label">💰 Faturamento do mês</div>
       <div class="value">R$ {{ faturamento_mes|br_format }}</div>
       <div class="sub">✓ {{ os_concluidas }} OSs concluídas</div>
     </div>
   </div>
-  <div class="col-md-6 col-lg-3 mb-3">
+  <div class="col">
     <div class="stat-card">
       <div class="label">📊 Ticket médio</div>
       <div class="value">R$ {{ ticket_medio|br_format }}</div>
       <div class="sub">Baseado nas OSs do mês</div>
     </div>
   </div>
-  <div class="col-md-6 col-lg-3 mb-3">
+  <div class="col">
     <div class="stat-card">
       <div class="label">📋 Ordens de Serviço</div>
       <div class="value">{{ total_os_mes }}</div>
       <div class="sub">{{ os_concluidas }} concluídas este mês</div>
     </div>
   </div>
-  <div class="col-md-6 col-lg-3 mb-3">
+  <div class="col">
     <div class="stat-card">
       <div class="label">👥 Clientes</div>
       <div class="value">{{ total_clientes }}</div>
       <div class="sub">Cadastrados no sistema</div>
     </div>
   </div>
-  <div class="col-md-6 col-lg-3 mb-3">
+  <div class="col">
     <div class="stat-card">
       <div class="label">🚗 Veículos</div>
       <div class="value">{{ total_veiculos }}</div>
@@ -100,8 +100,8 @@
 <!-- FUNCIONALIDADES RÁPIDAS -->
 <div style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e8e8e8; margin-bottom: 32px;">
   <h3 style="font-size: 18px; font-weight: 600; color: #1a3c5e; margin-bottom: 20px;">Funcionalidades Principais</h3>
-  <div class="row" style="justify-content: center;">
-    <div class="col-md-6 col-lg-4 mb-3">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+    <div class="col">
       <a href="/ordens/" style="text-decoration: none;">
         <div style="background: #f0f4ff; border-radius: 8px; padding: 16px; text-align: center; transition: all 0.3s; border: 1px solid #e0ebff;">
           <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
@@ -110,7 +110,7 @@
         </div>
       </a>
     </div>
-    <div class="col-md-6 col-lg-4 mb-3">
+    <div class="col">
       <a href="/estoque/" style="text-decoration: none;">
         <div style="background: #f5fff0; border-radius: 8px; padding: 16px; text-align: center; transition: all 0.3s; border: 1px solid #d4f5d4;">
           <div style="font-size: 32px; margin-bottom: 8px;">📦</div>
@@ -119,7 +119,7 @@
         </div>
       </a>
     </div>
-    <div class="col-md-6 col-lg-4 mb-3">
+    <div class="col">
       <a href="/clientes/" style="text-decoration: none;">
         <div style="background: #fff5f0; border-radius: 8px; padding: 16px; text-align: center; transition: all 0.3s; border: 1px solid #f5d4c4;">
           <div style="font-size: 32px; margin-bottom: 8px;">👥</div>
@@ -127,7 +127,8 @@
           <div style="font-size: 12px; color: #666; margin-top: 6px;">Gerenciar clientes</div>
         </div>
       </a>
-    </div>    <div class="col-md-6 col-lg-3 mb-3">
+    </div>
+    <div class="col">
       <a href="/clientes/" style="text-decoration: none;">
         <div style="background: #f0f5ff; border-radius: 8px; padding: 16px; text-align: center; transition: all 0.3s; border: 1px solid #d4e0f5;">
           <div style="font-size: 32px; margin-bottom: 8px;">🚗</div>
@@ -135,7 +136,8 @@
           <div style="font-size: 12px; color: #666; margin-top: 6px;">Gerenciar frota</div>
         </div>
       </a>
-    </div>  </div>
+    </div>
+  </div>
 </div>
 
 <!-- ALERTAS DE ESTOQUE -->

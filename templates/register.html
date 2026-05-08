@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block titulo %}Registrar Usuário - MecanicSystem{% endblock %}
+
+{% block conteudo %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="form-card">
+      <h2 style="font-size: 24px; margin-bottom: 20px; color: #1a3c5e;">Criar novo usuário</h2>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div style="background: #e7f5ff; color: #0f4c81; border: 1px solid #cfe5ff; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-salvar w-100">Cadastrar</button>
+      </form>
+
+      <p style="font-size: 13px; color: #666; margin-top: 16px; text-align: center;">
+        Já tem conta? <a href="{% url 'login' %}">Entrar</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
